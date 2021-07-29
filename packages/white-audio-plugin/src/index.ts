@@ -1,7 +1,7 @@
 import { Plugin } from "white-web-sdk";
 import { PluginContext, WhiteAudioPluginAttributes } from "./types";
 import { WhiteAudioPlugin } from "./WhiteAudioPlugin";
-
+import {AudioJsPluginOptions, setOptions} from './options'
 /**
  * white-web-sdk audio plugin.
  * @example
@@ -16,19 +16,41 @@ import { WhiteAudioPlugin } from "./WhiteAudioPlugin";
  *     attributes: { src: url, isNavigationDisable: false },
  * });
  */
-export const audioPlugin2: Plugin<PluginContext, WhiteAudioPluginAttributes> = Object.freeze({
-    kind: "audio2",
-    render: WhiteAudioPlugin,
-    defaultAttributes: {
-        src: "",
-        hostTime: 0,
-        currentTime: 0,
-        paused: true,
-        muted: false,
-        volume: 1,
-    },
-    hitTest(plugin) {
-        const memberState = (plugin as any).component.context.getMemberState();
-        return !(memberState?.currentApplianceName === "eraser");
-    },
-});
+export const audioPlugin2 = (options?: Partial<AudioJsPluginOptions>): Plugin => {
+    options && setOptions(options);
+    return {
+        kind: "audio2",
+        render: WhiteAudioPlugin,
+        defaultAttributes: {
+            src: "",
+            hostTime: 0,
+            currentTime: 0,
+            paused: true,
+            muted: false,
+            volume: 1,
+        },
+        hitTest(plugin) {
+            const memberState = (plugin as any).component.context.getMemberState();
+            return !(memberState?.currentApplianceName === "eraser");
+        },
+    }
+}
+
+// export const videoJsPlugin = (options?: Partial<VideoJsPluginOptions>): Plugin => {
+//     options && setOptions(options);
+
+//     return {
+//         kind: PluginId,
+//         render: VideoJsPlugin,
+//         defaultAttributes: {
+//             src: "",
+//             poster: "",
+//             hostTime: 0,
+//             currentTime: 0,
+//             paused: true,
+//             muted: false,
+//             volume: 1,
+//             close: true,
+//         },
+//     };
+// };

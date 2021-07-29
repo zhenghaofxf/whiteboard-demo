@@ -13,7 +13,7 @@ import deleteIconSVG from "./image/delete_icon.svg";
 import "./index.less";
 import { PluginContext, WhiteAudioPluginAttributes } from "./types";
 import { ChangedMap, delay, doubleRAF, play } from "./utils";
-
+import { options } from "./options";
 /** 发送同步事件间隔秒 */
 const SendInterval = 2;
 /** 同步上游播放时间误差秒 */
@@ -77,12 +77,15 @@ class WhiteAudioPluginImpl extends Component<WhiteAudioPluginImplProps> {
         const player = this.player.current!;
         player.currentTime = plugin.attributes.currentTime;
         player.addEventListener("play", () => {
+            options.onPlayEvent?.('play');
             plugin.putAttributes({ paused: false, ...this.timestamp() });
         });
         player.addEventListener("pause", () => {
+            options.onPlayEvent?.('pause');
             plugin.putAttributes({ paused: true, ...this.timestamp() });
         });
         player.addEventListener("seeked", () => {
+            options.onPlayEvent?.('seeked');
             plugin.putAttributes(this.timestamp());
         });
         player.addEventListener("volumechange", () => {
@@ -97,6 +100,7 @@ class WhiteAudioPluginImpl extends Component<WhiteAudioPluginImplProps> {
         });
         this.disposers.push(() => window.clearTimeout(timer));
         player.addEventListener("ended", async () => {
+            options.onPlayEvent?.('ended');
             plugin.putAttributes({ paused: true, ...this.timestamp() });
             await delay(500);
             player.load();
@@ -197,6 +201,7 @@ class WhiteAudioPluginImpl extends Component<WhiteAudioPluginImplProps> {
                         controlsList="nodownload nofullscreen"
                         preload="auto"
                         ref={this.player}
+                        id='hb-audio-plugins'
                     />
                 </div>
             </div>
