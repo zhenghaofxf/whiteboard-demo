@@ -80,6 +80,10 @@ class WhiteAudioPluginImpl extends Component<WhiteAudioPluginImplProps> {
             options.onPlayEvent?.('play');
             plugin.putAttributes({ paused: false, ...this.timestamp() });
         });
+        player.addEventListener("playing", () => {
+            options.onPlayEvent?.('playing');
+            // plugin.putAttributes({ paused: false, ...this.timestamp() });
+        });
         player.addEventListener("pause", () => {
             options.onPlayEvent?.('pause');
             plugin.putAttributes({ paused: true, ...this.timestamp() });
